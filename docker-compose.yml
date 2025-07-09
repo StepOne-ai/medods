@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=stepan2005
+      - POSTGRES_DB=medods
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+  app:
+    build: .
+    entrypoint: ["sh", "-c", "go run main.go"]
+    environment:
+      - DATABASE_URL=postgres://postgres:stepan2005@localhost:5432/medods
+      - JWT_SECRET=somesupersecretkey1234
+      - WEBHOOK_URL=http://localhost:8080/webhook
+    depends_on:
+      - db
+    networks:
+      - app-network
+    restart: always
+    
+networks:
+  app-network:
